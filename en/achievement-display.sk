@@ -1,0 +1,105 @@
+# ------------------------------------------------------------
+#  skript-achievement-display (English edition)
+#  https://github.com/Im-Tim-mI/skript-achievement-display
+#  Copyright (c) 2026 廷廷小教室、廷廷的家（Tim945）
+#  License: MIT + Commons Clause (see LICENSE)
+# ------------------------------------------------------------
+
+# ============================================
+# Custom achievement system
+# ============================================
+
+# ============================================
+# Achievement display function
+# ============================================
+function showAchievement(p: player, title: text, desc: text):
+    # Every player on the server sees the on-screen title
+    loop all players:
+        send title "&6&l🏆 Achievement Unlocked!" with subtitle "&e%{_p}% &7earned &e%{_title}%" to loop-player for 3 seconds
+        play sound "UI_TOAST_CHALLENGE_COMPLETE" with volume 1 with pitch 1 to loop-player
+
+    # Chat broadcast
+    broadcast "&6&l══════════════════"
+    broadcast "&6&l🏆 %{_p}% &eunlocked an achievement!"
+    broadcast "&e%{_title}%"
+    broadcast "&7%{_desc}%"
+    broadcast "&6&l══════════════════"
+
+    # Send to Discord
+    execute console command "discord broadcast 🏆 **%{_p}%** unlocked an achievement! **%{_title}%** - %{_desc}%"
+
+# ============================================
+# Earn "Parkour Rookie"
+# ============================================
+on inventory click:
+    if event-item is compass:
+        if name of event-item is "§bParkour Adept":
+            if {achievement.parkour.beginner::%uuid of player%} is not set:
+                set {achievement.parkour.beginner::%uuid of player%} to true
+                showAchievement(player, "Parkour Rookie", "Got the 'Parkour Adept' compass!")
+
+# ============================================
+# Earn "Parkour Master"
+# ============================================
+on inventory click:
+    if event-item is nether star:
+        if name of event-item is "§bParkour Expert":
+            if {achievement.parkour.master::%uuid of player%} is not set:
+                set {achievement.parkour.master::%uuid of player%} to true
+                showAchievement(player, "Parkour Master", "Got the 'Parkour Expert' nether star!")
+
+# ============================================
+# Achievement list command
+# ============================================
+command /achievements:
+    aliases: /achievement
+    trigger:
+        send "&6&l══════ My Achievements ══════" to player
+
+        # Parkour achievements
+        send "&e[Parkour]" to player
+        if {achievement.parkour.beginner::%uuid of player%} is true:
+            send "&a  ✔ Parkour Rookie - Get the 'Parkour Adept'" to player
+        else:
+            send "&7  ✘ Parkour Rookie - ???" to player
+
+        if {achievement.parkour.master::%uuid of player%} is true:
+            send "&a  ✔ Parkour Master - Get the 'Parkour Expert'" to player
+        else:
+            send "&7  ✘ Parkour Master - ???" to player
+
+        send "&6&l═════════════════════════" to player
+
+# ============================================
+# Admin: reset a player's achievements
+# ============================================
+command /resetachievements [<player>]:
+    permission: op
+    trigger:
+        if arg-1 is set:
+            delete {achievement.parkour.beginner::%uuid of arg-1%}
+            delete {achievement.parkour.master::%uuid of arg-1%}
+            send "&aReset all achievements of %arg-1%!" to player
+        else:
+            send "&cUsage: /resetachievements <player>" to player
+
+# ============================================
+# Admin: grant an achievement
+# ============================================
+command /giveachievement [<player>] [<text>]:
+    permission: op
+    trigger:
+        if arg-1 is not set:
+            send "&cUsage: /giveachievement <player> <achievement ID>" to player
+            send "&7Available achievements: parkour.beginner, parkour.master" to player
+            stop
+
+        if arg-2 is "parkour.beginner":
+            set {achievement.parkour.beginner::%uuid of arg-1%} to true
+            showAchievement(arg-1, "Parkour Rookie", "Got the 'Parkour Adept' compass!")
+            send "&aGave %arg-1% the achievement: Parkour Rookie" to player
+
+        if arg-2 is "parkour.master":
+            set {achievement.parkour.master::%uuid of arg-1%} to true
+            showAchievement(arg-1, "Parkour Master", "Got the 'Parkour Expert' nether star!")
+            send "&aGave %arg-1% the achievement: Parkour Master" to player
