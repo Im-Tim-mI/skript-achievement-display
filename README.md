@@ -6,6 +6,18 @@ A small custom achievement system: when a player takes a parkour reward item the
 
 > This repository has two editions of the same script: **繁體中文 (zh-TW)** is the original used on the author's Traditional Chinese server, and **English** is a full translation (commands, messages and variable names) with the same features.
 
+<!-- BEGIN LIVE SCREENSHOTS -->
+
+## Screenshots
+
+![Achievement list in chat](docs/images/achievement-list.png)
+
+*`/成就` (alias `/achievement`) for a brand-new player, so every achievement still shows as locked.*
+
+> These are live-server captures, not native client screenshots. A headless client logged into a real Paper 26.2 server, triggered the script, and the block / UI data the server sent back was re-rendered using the official Minecraft 26.2 client assets. Mojang/Microsoft image assets are not covered by this repository's code licence.
+
+<!-- END LIVE SCREENSHOTS -->
+
 ## Features
 
 - Two parkour achievements, each unlocked once per player
